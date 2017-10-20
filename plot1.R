@@ -1,0 +1,17 @@
+library(lubridate)
+library(ggplot2)
+library(dplyr)
+hp<-read.table("./house_power.txt", sep=";", na.strings="?", nrows=2880, skip=66637)
+cn<-read.table("./house_power.txt", sep=";", na.strings="?", nrows=1)
+cn<-sapply(cn, as.character)
+names(hp)<-cn
+when= paste(hp$Date, hp$Time)
+when<-as.character(when)
+when<- dmy_hms(when)
+day<-weekdays(when)
+hp<-mutate(hp, when=when, day=day)
+dev.set(3)
+
+png(filename = "plot1.png", width = 480, height = 480)
+plot1<-hist(hp$Global_active_power, col="red", xlab="Global Active Power (kilowatts)", main="Global Active Power")
+dev.off()
